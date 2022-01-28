@@ -4,7 +4,7 @@ import './App.css';
 // import {DISHES} from './shared/dishes';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { ConfigureStore } from './redux/configureStore';
+import { ConfigureStore } from './redux/configureStore';import DishDetail from './components/DishDetailComponent';
 
 const store = ConfigureStore();
 

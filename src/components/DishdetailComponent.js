@@ -1,6 +1,16 @@
   import React from 'react';
-  import { Card, CardImg, CardText, CardBody,CardTitle, Breadcrumb, BreadcrumbItem } from 'reactstrap';
+  import { Card, CardImg, CardText, CardBody,CardTitle, Breadcrumb, BreadcrumbItem,Button,
+    Row,Modal, ModalHeader, ModalBody,Form,FormGroup, Input, Label,Col } from 'reactstrap';
   import { Link } from 'react-router-dom';
+  
+import { Control, LocalForm, Errors } from 'react-redux-form';
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !(val) || (val.length <= len);
+const minLength = (len) => (val) => val && (val.length >= len);
+
+
+
+  
 
     function RenderDish({dish}){
         if(dish != null){
@@ -66,6 +76,10 @@ const DishDetail = (props) =>{
                     </div>
                     <div className="col-12 col-md-5 m-1">
                         <RenderComments comments={props.comments} />
+                        <CommentForm>
+                            
+                        </CommentForm>
+                       
                     </div>
                 </div>
                 </div>
@@ -76,7 +90,101 @@ const DishDetail = (props) =>{
     
             
 }
-
+class CommentForm extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            isCommentModalOpen: false
+        };
+        
+        this.toggleCommentModal = this.toggleCommentModal.bind(this);
+        this.handleCommentSubmit = this.handleCommentSubmit.bind(this);
+    }
+    toggleCommentModal() {
+        this.setState({
+          isCommentModalOpen: !this.state.isModalOpen
+        });
+      }
+      handleCommentSubmit(values) {
+        console.log('Current State is: ' + JSON.stringify(values));
+        alert('Current State is: ' + JSON.stringify(values));
+        // event.preventDefault();
+    }
+    render(){
+    return(
+        <div>
+        <Button outline onClick={this.toggleCommentModal}><span className="fa fa-pencil fa-lg"></span> Submit Comment</Button>
+        <Modal isOpen={this.state.isCommentModalOpen} toggle={this.toggleCommentModal}>
+                    <ModalHeader toggle={this.toggleCommentModal}>Submit Commit</ModalHeader>
+                    <ModalBody>
+                        
+                    <LocalForm onSubmit={(values) => this.handleCommentSubmit(values)}>
+                    <Row className="form-group">
+                                <Label htmlFor="rating" md={12} >Rating</Label>
+                                <Col md={12}>
+                                    <Control.select model=".rating"
+                                        className="form-control"
+                                        name="rating"
+                                        id="rating"
+                                        validators={{
+                                            required
+                                        }}
+                                    >
+                                        <option>1</option>
+                                        <option>2</option>
+                                        <option>3</option>
+                                        <option>4</option>
+                                        <option>5</option>
+                                    </Control.select>
+                                
+                                </Col>
+                            </Row>
+                    <Row className="form-group">
+                                <Label htmlFor="author" md={12}>Your Name</Label>
+                                
+                                <Col md={12}>
+                                    <Control.text model=".author" id="author" name="author"
+                                        placeholder="Your name"
+                                        className="form-control"
+                                        validators={{
+                                            required, minLength: minLength(3), maxLength: maxLength(15)
+                                        }}
+                                         />
+                                    <Errors
+                                        className="text-danger"
+                                        model=".author"
+                                        show="touched"
+                                        messages={{
+                                            required: 'Required',
+                                            minLength: 'Must be greater than 2 characters',
+                                            maxLength: 'Must be 15 characters or less'
+                                        }}
+                                     />
+                                </Col>
+                            </Row>
+                            <Row className="form-group">
+        <Label htmlFor="comment" md={12}>Comment</Label>
+        <Col md={12}>
+            <Control.textarea model=".comment" id="comment" name="comment"
+                rows="6"
+                className="form-control" />
+        </Col>
+    </Row>
+    <Row className="form-group">
+        <Col md={{size:10}}>
+            <Button type="submit" color="primary">
+            Submit
+            </Button>
+        </Col>
+    </Row>
+                            </LocalForm>
+                            </ModalBody>
+                            </Modal>
+    </div>
+        )
+    
+    }  
+}
 
 
 export default DishDetail;
